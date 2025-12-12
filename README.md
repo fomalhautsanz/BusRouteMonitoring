@@ -16,10 +16,16 @@ By default, the workspace contains the following folders:
 - `lib` – Contains dependencies and external libraries
    - `JavaFX SDK` – JavaFX Folder is also located here  
 - `assets` - Contains all img and other assets that is related
--
-Compiled output files will be generated in the `bin` folder by default.  
 
-> To customize the folder structure, edit `.vscode/settings.json` and update the related settings.
+## File Paths
+
+When accessing project files, always use relative paths:
+
+- Use `./lib/...` for dependencies or libraries  
+- Use `./assets/...` for images or other resources  
+
+> Using relative paths ensures that the project works without manually editing file locations.  
+> The exact format may vary depending on the code context (e.g., `FileInputStream`, `FXMLLoader`, etc.).
 
 ---
 
