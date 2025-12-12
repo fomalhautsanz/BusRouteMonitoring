@@ -38,6 +38,7 @@ This project uses **JavaFX 25** for GUI development.
 Ensure you have **Java SDK 25** installed:  
 - [Download Java SE 25](https://www.oracle.com/java/technologies/javase/jdk25-archive-downloads.html)  
 
+
 >If you are cloning this repo. You can skip this file. The SDK is already in `./lib/..`.
 Download the **JavaFX 25 SDK**:  
 - [Download JavaFX 25](https://gluonhq.com/products/javafx/)  
