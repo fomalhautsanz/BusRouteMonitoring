@@ -74,6 +74,8 @@ To run the project with JavaFX in VS Code, use the following `launch.json` confi
    - Click the Run button.
    - The Bus Route Monitoring application GUI should start.
   
+---
+  
 ### C. IntelliJ IDEA Setup
 
 Follow these steps to run the project in IntelliJ IDEA:
