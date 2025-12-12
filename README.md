@@ -39,7 +39,7 @@ Ensure you have **Java SDK 25** installed:
 - [Download Java SE 25](https://www.oracle.com/java/technologies/javase/jdk25-archive-downloads.html)  
 
 
-> If you are cloning this repo, you can skip this step. The SDK is already included in `./lib/...`.
+> If you are cloning this repo, you can skip this step. The SDK is already included in `./lib/...`
 
 Download the **JavaFX 25 SDK**:  
 - [Download JavaFX 25](https://gluonhq.com/products/javafx/)
