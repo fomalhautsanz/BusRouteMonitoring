@@ -91,7 +91,6 @@ Follow these steps to run the project in IntelliJ IDEA:
 4. **Add VM options for JavaFX**:  
    ```text
    --module-path lib/javafx-sdk-25/lib --add-modules javafx.controls,javafx.fxml --enable-native-access=javafx.graphics
-
 5. **Set the Project SDK**:
    - Go to File > Project Structure > Project.
    - Select Java 25 as the Project SDK.
