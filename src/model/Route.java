@@ -1,9 +1,10 @@
 package model;
 
 public class Route {
+
     private Terminal start;
     private Terminal end;
-    private LinkedList<Waypoint> waypoints; // or LinkedList<Waypoint>
+    private LinkedList<Waypoint> waypoints;
 
     public Route(Terminal start, Terminal end) {
         this.start = start;
@@ -14,4 +15,12 @@ public class Route {
     public Terminal getStart() { return start; }
     public Terminal getEnd() { return end; }
     public LinkedList<Waypoint> getWaypoints() { return waypoints; }
+
+    // first target of the bus
+    public Waypoint getFirstTarget() {
+        if (!waypoints.isEmpty()) {
+            return waypoints.getHead().data;
+        }
+        return new Waypoint(end.getX(), end.getY());
+    }
 }

@@ -3,10 +3,10 @@ package view.components;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import model.Terminal;
 
-public class MapMarker extends StackPane {
+public class MapMarker extends VBox {
     private Terminal terminal;
 
     public MapMarker(Terminal terminal, Runnable onClick) {
@@ -24,11 +24,19 @@ public class MapMarker extends StackPane {
         setOnMouseExited(e -> name.setVisible(false));
 
         // Boss Gemina dinhia tung logic kung magclick ka sa marker
-        setOnMouseClicked(e -> onClick.run()); 
+        setOnMouseClicked(e -> onClick.run());
 
         getChildren().addAll(iv, name);
+
+        // Center the marker on its coordinates
+//        iv.setTranslateX(-20); // Half of fitWidth (40/2)
+//        iv.setTranslateY(-40); // Full height so pin points to location
+//
+//        name.setTranslateX(-20);
+//        name.setTranslateY(-45); // Above the marker
     }
 
-
-    public Terminal getTerminal() { return terminal; }
+    public Terminal getTerminal() {
+        return terminal;
+    }
 }

@@ -10,19 +10,33 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.util.Duration;
+import model.Bus;
+import model.Route;
+import model.Waypoint;
 
 public class MaximizeMap extends Application {
 
     private ComboBox<String> statusDropdown;
     private Label timeLabel;
+    private Bus bus;
+    private Circle busNode;
+    private Timeline timeline;
+
 
     public void start(Stage primaryStage) {
         // Main container
-        VBox mainContainer = new VBox(10);
+        StackPane mainContainer = new StackPane();
         mainContainer.setStyle(
                 "-fx-background-image: url('file:C:\\Users\\Mind Motion Films\\Documents\\GitHub\\BusRouteMonitoring\\src\\main\\java\\mainUI\\maximize_map.png');" +
                         "-fx-background-size: cover;" +
-                        "-fx-background-repeat: no-repeat;" +
+                         "-fx-background-repeat: no-repeat;" +
                         "-fx-background-position: center center;");
 
         // Top control panel
@@ -125,12 +139,14 @@ public class MaximizeMap extends Application {
     private void handlePlay(Button playButton) {
         if (playButton.getText().equals("▶")) {
             playButton.setText("⏸");
-            System.out.println("Play started");
-            // Implement play/animation logic
+            //bus.start();
+            timeline.play();
+            System.out.println("Bus moving");
         } else {
             playButton.setText("▶");
-            System.out.println("Paused");
-            // Implement pause logic
+            //bus.stop();
+            timeline.pause();
+            System.out.println("Bus paused");
         }
     }
 
