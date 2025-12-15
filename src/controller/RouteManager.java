@@ -6,106 +6,141 @@ import model.LinkedList;
 
 public class RouteManager {
 
-    private List<Terminal> terminals;
-    private LinkedList<Waypoint> allWaypoints;
-    private Map<Terminal, LinkedList<Waypoint>.Node> terminalToWaypoint;
+    private final List<Terminal> terminals = new ArrayList<>();
+
+    private final LinkedList<Waypoint> mainRoad = new LinkedList<>();
+
+    private final Map<Terminal, LinkedList<Waypoint>.Node> terminalMap = new HashMap<>();
 
     public RouteManager() {
-        terminals = new ArrayList<>();
-        allWaypoints = new LinkedList<>();
-        terminalToWaypoint = new HashMap<>();
-        initializeData();
+        init();
     }
 
-    private void initializeData() {
-        // Terminals
-        Terminal t1 = new Terminal("City of Bislig, Surigao del Sur", 1101.6, 85.6);
-        Terminal t2 = new Terminal("Monkayo, Davao de Oro", 975.2, 219.2);
-        Terminal t3 = new Terminal("Nabunturan, Davao de Oro", 930.4, 304.0);
-        Terminal t4 = new Terminal("Tagum City, Davao del Norte", 862.4, 366.4);
-        Terminal t5 = new Terminal("Panabo City, Davao del Norte", 811.1103515625, 420.70941162109375);
-        Terminal t6 = new Terminal("Davao City, Davao del Norte", 778.1490478515625, 495.0567626953125);
-        Terminal t7 = new Terminal("Digos City, Davao del Sur", 660.9358520507812, 660.0277709960938);
-        Terminal t8 = new Terminal("Lupon, Davao Oriental", 1010.4, 506.4);
-        Terminal t9 = new Terminal("Banganga, Davao Oriental", 1103.2, 321.6);
-        Terminal t10 = new Terminal("Pantukan, Davao de Oro", 949.6, 468.8);
+    private void init() {
 
-        terminals.addAll(Arrays.asList(t1,t2,t3,t4,t5,t6,t7,t8,t9,t10));
+        // -------- TERMINALS --------
+        Terminal t1 = new Terminal("City of Bislig, Surigao del Sur", 1102.6, 89.56);
+        Terminal t2 = new Terminal("Monkayo, Davao de Oro", 973.60, 221.60);
+        Terminal t3 = new Terminal("Nabunturan, Davao de Oro", 930.40, 308.80);
+        Terminal t4 = new Terminal("Tagum City, Davao del Norte", 862.40, 366.40);
+        Terminal t5 = new Terminal("Panabo City, Davao del Norte", 811.11, 420.71);
+        Terminal t6 = new Terminal("Davao City, Davao del Norte", 774.60, 513.18);
+        Terminal t7 = new Terminal("Digos City, Davao del Sur", 664.00, 633.03);
 
-        // Waypoints (simplified example, connect all terminals in sequence)
-        addWaypoint(new Waypoint(t1.getX(), t1.getY()));
-        addWaypoint(new Waypoint(1093.0, 114.0));
-        addWaypoint(new Waypoint(1086.0, 110.0));
-        addWaypoint(new Waypoint(1068.0, 119.0));
-        addWaypoint(new Waypoint(1053.0, 118.0));
-        addWaypoint(new Waypoint(1053.0, 128.0));
-        addWaypoint(new Waypoint(1041.0, 142.0));
-        addWaypoint(new Waypoint(1030.0, 142.0));
-        addWaypoint(new Waypoint(1012.0, 156.0));
-        addWaypoint(new Waypoint(1008.0, 151.0));
-        addWaypoint(new Waypoint(986.0, 147.0));
-        addWaypoint(new Waypoint(990, 168));
-        addWaypoint(new Waypoint(983.4444580078125, 187.5416717529297));
-        addWaypoint(new Waypoint(985.5277709960938, 202.125));
-        addWaypoint(new Waypoint(t2.getX(), t2.getY()));
-        addWaypoint(new Waypoint(966.0, 220.0));
-        addWaypoint(new Waypoint(966.0556030273438, 230.59722900390625));
-        addWaypoint(new Waypoint(946.1065063476562, 258.0856628417969));
-        addWaypoint(new Waypoint(938.004638671875, 299.1736145019531));
-        addWaypoint(new Waypoint(t3.getX(), t3.getY()));
-        addWaypoint(new Waypoint(910.7474975585938, 345.6531982421875));
-        addWaypoint(new Waypoint(906.3268432617188, 350.4757385253906));
-        addWaypoint(new Waypoint(903.513671875, 346.0550842285156));
-        addWaypoint(new Waypoint(891.4573364257812, 345.2513122558594));
-        addWaypoint(new Waypoint(883.8217163085938, 351.27947998046875));
-        addWaypoint(new Waypoint(881.8123168945312, 357.3076477050781));
-        addWaypoint(new Waypoint(t4.getX(), t4.getY()));
-        addWaypoint(new Waypoint(849.1932373046875, 384.2222595214844));
-        addWaypoint(new Waypoint(841.2511596679688, 393.3817443847656));
-        addWaypoint(new Waypoint(823.1160888671875, 396.9986572265625));
-        addWaypoint(new Waypoint(t5.getX(), t5.getY()));
-        addWaypoint(new Waypoint(793.4606323242188, 445.9197692871094));
-        addWaypoint(new Waypoint(797.8009033203125, 480.15972900390625));
-        addWaypoint(new Waypoint(776.49951171875, 496.62933349609375));
-        addWaypoint(new Waypoint(t6.getX(), t6.getY()));
-        addWaypoint(new Waypoint(759.8009033203125, 499.4305725097656));
-        addWaypoint(new Waypoint(761.5370483398438, 509.84722900390625));
-        addWaypoint(new Waypoint(726.236083984375, 529.5231323242188));
-        addWaypoint(new Waypoint(708.5321655273438, 580.7119140625));
-        addWaypoint(new Waypoint(675.3080444335938, 606.1748657226562));
-        addWaypoint(new Waypoint(680.480712890625, 614.9344482421875));
-        addWaypoint(new Waypoint(664.5150756835938, 639.8568725585938));
-        addWaypoint(new Waypoint(t7.getX(), t7.getY()));
-        //addWaypoint(new Waypoint());
+        terminals.addAll(List.of(t1, t2, t3, t4, t5, t6, t7));
 
-        // Map terminals to nearest waypoint
-        mapTerminalToWaypoint(t1, allWaypoints.getHead());
-        mapTerminalToWaypoint(t2, allWaypoints.getHead().next.next);
-        mapTerminalToWaypoint(t3, allWaypoints.getHead().next.next.next.next);
-        mapTerminalToWaypoint(t4, allWaypoints.getHead().next.next.next.next.next.next);
-        mapTerminalToWaypoint(t5, allWaypoints.getHead().next.next.next.next.next.next.next.next);
-        mapTerminalToWaypoint(t6, allWaypoints.getHead().next.next.next.next.next.next.next.next.next.next);
+        Waypoint wp1 = new Waypoint(t1.getX(), t1.getY());
+        terminalMap.put(t1, mainRoad.add(wp1));
+
+        mainRoad.add(new Waypoint(1104.15, 101.32));
+        mainRoad.add(new Waypoint(1093, 114));
+        mainRoad.add(new Waypoint(1086, 110));
+        mainRoad.add(new Waypoint(1068, 119));
+        mainRoad.add(new Waypoint(1053, 118));
+        mainRoad.add(new Waypoint(1053, 128));
+        mainRoad.add(new Waypoint(1041, 142));
+        mainRoad.add(new Waypoint(1030, 142));
+        mainRoad.add(new Waypoint(1012, 156));
+        mainRoad.add(new Waypoint(1008, 151));
+        mainRoad.add(new Waypoint(986, 147));
+        mainRoad.add(new Waypoint(990, 168));
+        mainRoad.add(new Waypoint(983.44, 187.54));
+        mainRoad.add(new Waypoint(985.52, 202.12));
+
+        Waypoint wp2 = new Waypoint(t2.getX(), t2.getY());
+        terminalMap.put(t2, mainRoad.add(wp2));
+
+        mainRoad.add(new Waypoint(966, 220));
+        mainRoad.add(new Waypoint(966.05, 230.59));
+        mainRoad.add(new Waypoint(946.10, 258.08));
+        mainRoad.add(new Waypoint(938.00, 299.17));
+
+        Waypoint wp3 = new Waypoint(t3.getX(), t3.getY());
+        terminalMap.put(t3, mainRoad.add(wp3));
+
+        mainRoad.add(new Waypoint(918.98, 318.11));
+        mainRoad.add(new Waypoint(916.58, 325.63));
+        mainRoad.add(new Waypoint(910.02, 334.59));
+        mainRoad.add(new Waypoint(910.66, 343.55));
+        mainRoad.add(new Waypoint(906.98, 348.51));
+        mainRoad.add(new Waypoint(902.82, 346.11));
+        mainRoad.add(new Waypoint(894.50, 345.31));
+
+        Waypoint wp4 = new Waypoint(t4.getX(), t4.getY());
+        terminalMap.put(t4, mainRoad.add(wp4));
+
+        mainRoad.add(new Waypoint(849.19, 384.22));
+        mainRoad.add(new Waypoint(841.25, 393.38));
+        mainRoad.add(new Waypoint(823.11, 396.99));
+
+        Waypoint wp5 = new Waypoint(t5.getX(), t5.getY());
+        terminalMap.put(t5, mainRoad.add(wp5));
+
+        mainRoad.add(new Waypoint(793.46, 445.91));
+        mainRoad.add(new Waypoint(797.80, 480.15));
+        mainRoad.add(new Waypoint(776.49, 496.62));
+
+        Waypoint wp6 = new Waypoint(t6.getX(), t6.getY());
+        terminalMap.put(t6, mainRoad.add(wp6));
+
+        mainRoad.add(new Waypoint(759.80, 499.43));
+        mainRoad.add(new Waypoint(761.53, 509.84));
+        mainRoad.add(new Waypoint(726.23, 529.52));
+        mainRoad.add(new Waypoint(708.53, 580.71));
+        mainRoad.add(new Waypoint(675.30, 606.17));
+        mainRoad.add(new Waypoint(680.48, 614.93));
+
+        Waypoint wp7 = new Waypoint(t7.getX(), t7.getY());
+        terminalMap.put(t7, mainRoad.add(wp7));
     }
 
-    // Find the LinkedList Node that matches a terminal's coordinates
-    public LinkedList<Waypoint>.Node getNodeForTerminal(Terminal t) {
-        LinkedList<Waypoint>.Node node = allWaypoints.getHead();
-        while (node != null) {
-            if (Math.abs(node.data.getX() - t.getX()) < 0.1 &&
-                    Math.abs(node.data.getY() - t.getY()) < 0.1) {
-                return node;
-            }
-            node = node.next;
+    public List<Waypoint> buildRoute(Terminal start, Terminal end) {
+
+        LinkedList<Waypoint>.Node startNode = terminalMap.get(start);
+        LinkedList<Waypoint>.Node endNode = terminalMap.get(end);
+
+        Set<LinkedList<Waypoint>.Node> visited = new HashSet<>();
+        List<Waypoint> path = new ArrayList<>();
+
+        if (dfs(startNode, endNode, visited, path)) {
+            return path;
         }
-        return null;
+        return Collections.emptyList();
     }
 
+    private boolean dfs(
+            LinkedList<Waypoint>.Node current,
+            LinkedList<Waypoint>.Node target,
+            Set<LinkedList<Waypoint>.Node> visited,
+            List<Waypoint> path) {
 
-    public Terminal getTerminalByName(String name) {
-        for (Terminal t : terminals) {
-            if (t.getName().equals(name)) return t;
+        if (current == null || visited.contains(current)) return false;
+
+        visited.add(current);
+        path.add(current.data);
+
+        if (current == target) return true;
+
+        boolean blockMainRoad =
+                current == terminalMap.get(getTerminalByName("City of Bislig, Surigao del Sur"))
+                && isEastRoadDestination(target);
+
+        if (!blockMainRoad) {
+            if (current.next != null && dfs(current.next, target, visited, path)) return true;
         }
-        return null;
+
+        if (current.prev != null && dfs(current.prev, target, visited, path)) return true;
+
+        for (LinkedList<Waypoint>.Node branch : current.data.getConnections()) {
+            if (dfs(branch, target, visited, path)) return true;
+        }
+
+        path.remove(path.size() - 1);
+        return false;
+    }
+
+    public List<Terminal> getAllTerminals() {
+        return terminals;
     }
 
     public List<String> getTerminalNames() {
@@ -114,27 +149,17 @@ public class RouteManager {
         return names;
     }
 
-    public LinkedList<Waypoint>.Node getStartNode(Terminal t) {
-        return terminalToWaypoint.get(t);
+    public Terminal getTerminalByName(String name) {
+        for (Terminal t : terminals) {
+            if (t.getName().equals(name)) return t;
+        }
+        return null;
     }
 
-    public LinkedList<Waypoint>.Node getEndNode(Terminal t) {
-        return terminalToWaypoint.get(t);
+    private boolean isEastRoadDestination(LinkedList<Waypoint>.Node target) {
+        return target == terminalMap.get(getTerminalByName("Lupon, Davao Oriental"))
+            || target == terminalMap.get(getTerminalByName("Pantukan, Davao de Oro"))
+            || target == terminalMap.get(getTerminalByName("Banganga, Davao Oriental"));
     }
 
-    public LinkedList<Waypoint> getAllWaypoints() {
-        return allWaypoints;
-    }
-
-    public List<Terminal> getAllTerminals() {
-        return terminals;
-    }
-
-    public void addWaypoint(Waypoint wp) {
-        allWaypoints.add(wp);
-    }
-
-    public void mapTerminalToWaypoint(Terminal t, LinkedList<Waypoint>.Node node) {
-        terminalToWaypoint.put(t, node);
-    }
 }

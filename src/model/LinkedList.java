@@ -16,7 +16,7 @@ public class LinkedList<T> {
     private Node tail;
     private int size = 0;
 
-    public void add(T data) {
+    public Node add(T data) {
         Node newNode = new Node(data);
 
         if (head == null) {
@@ -26,13 +26,19 @@ public class LinkedList<T> {
             newNode.prev = tail;
         }
         tail = newNode;
-
         size++;
+        return newNode; 
     }
+
 
     public Node getHead() {
         return head;
     }
+
+    public Node getTail() {
+        return tail;
+    }
+
 
     public int size() {
         return size;

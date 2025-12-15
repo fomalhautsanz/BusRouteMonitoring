@@ -1,26 +1,48 @@
 package model;
 
 public class Terminal {
+
     private String name;
     private double x;
     private double y;
-    private LinkedList<Route> routes;
+
+    private String busStatus = "Not Arrived";
+    private String lastArrivalTime = "--:--";
+    private Terminal destination;
 
     public Terminal(String name, double x, double y) {
         this.name = name;
         this.x = x;
         this.y = y;
-        this.routes = new LinkedList<>();
     }
 
+    public double getX() { return x; }
+    public double getY() { return y; }
 
-    public double getX(double mapWidth) { return x; }
-    public double getY(double mapHeight) { return y; }
+    public String getName() { return name; }
 
-    // Raw coordinates
-    public double getX() {return x;}
+   
+    public String getBusStatus() {
+        return busStatus;
+    }
 
-    public double getY() {return y;}
+    public void setBusStatus(String busStatus) {
+        this.busStatus = busStatus;
+    }
 
-    public String getName() {return name;}
+    public String getLastArrivalTime() {
+        return lastArrivalTime;
+    }
+
+    public void setLastArrivalTime(String lastArrivalTime) {
+        this.lastArrivalTime = lastArrivalTime;
+    }
+
+    public Terminal getDestination() {
+        return destination;
+    }
+
+    public void setDestination(Terminal destination) {
+        this.destination = destination;
+    }
 }

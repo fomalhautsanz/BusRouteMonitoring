@@ -16,7 +16,6 @@ public class Route {
     public Terminal getEnd() { return end; }
     public LinkedList<Waypoint> getWaypoints() { return waypoints; }
 
-    // first target of the bus
     public Waypoint getFirstTarget() {
         if (!waypoints.isEmpty()) {
             return waypoints.getHead().data;

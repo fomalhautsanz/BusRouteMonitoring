@@ -1,5 +1,7 @@
 package model;
 
+import java.util.List;
+
 public class Bus {
 
     private double x, y;
@@ -27,6 +29,30 @@ public class Bus {
         }
     }
 
+    public Bus(List<Waypoint> waypoints, double speed) {
+        if (waypoints == null || waypoints.size() < 2) {
+            isMoving = false;
+            return;
+        }
+
+        this.speed = speed;
+        this.isMoving = true;
+
+        LinkedList<Waypoint> tempList = new LinkedList<>();
+
+        for (Waypoint wp : waypoints) {
+            tempList.add(wp);
+        }
+
+        this.currentNode = tempList.getHead();
+        this.endNode = tempList.getTail();
+
+        this.x = currentNode.data.getX();
+        this.y = currentNode.data.getY();
+
+        this.endX = endNode.data.getX();
+        this.endY = endNode.data.getY();
+    }
     public double getX() { return x; }
     public double getY() { return y; }
     public boolean isMoving() { return isMoving; }
@@ -60,18 +86,16 @@ public class Bus {
         }
     }
 
-    // NEW: Move backward along the route (move to previous waypoint)
     public void moveBackward() {
         if (currentNode == null || currentNode.prev == null) return;
 
-        // Move to previous waypoint
+        // Move to pevious waypoint
         currentNode = currentNode.prev;
         x = currentNode.data.getX();
         y = currentNode.data.getY();
         isMoving = true;
     }
 
-    // NEW: Skip forward multiple steps
     public void skipForward(int steps) {
         for (int i = 0; i < steps && currentNode != null; i++) {
             // Move to the next waypoint directly
@@ -91,7 +115,6 @@ public class Bus {
         }
     }
 
-    // NEW: Skip backward multiple steps
     public void skipBackward(int steps) {
         for (int i = 0; i < steps && currentNode != null; i++) {
             if (currentNode.prev != null) {
@@ -103,7 +126,6 @@ public class Bus {
         }
     }
 
-    // NEW: Reset to start position
     public void reset(LinkedList<Waypoint>.Node startNode) {
         this.currentNode = startNode;
         if (currentNode != null) {
