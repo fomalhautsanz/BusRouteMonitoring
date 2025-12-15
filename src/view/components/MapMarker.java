@@ -5,8 +5,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import model.Terminal;
 
-import java.io.File;
-
 public class MapMarker extends VBox {
 
     private static final double PIN_WIDTH = 24;

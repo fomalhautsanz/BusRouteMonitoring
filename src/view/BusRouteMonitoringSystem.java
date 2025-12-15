@@ -17,10 +17,13 @@ import javafx.scene.shape.Polyline;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.Terminal;
+import model.TerminalEvent;
 import model.Waypoint;
 import view.components.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -64,6 +67,12 @@ public class BusRouteMonitoringSystem extends Application {
     private final Set<Terminal> reachedTerminals = new HashSet<>();
 
     private TerminalInfoPanel terminalInfoPanel;
+    
+    private TerminalEventPanel eventPanel;
+    private int disabledEventCount = 0;
+    private static final int MAX_DISABLED_EVENTS_PER_ROUTE = 2;
+
+    private List<Terminal> activeRouteTerminals = new ArrayList<>();
 
     @Override
     public void start(Stage primaryStage) {
@@ -234,10 +243,15 @@ public class BusRouteMonitoringSystem extends Application {
     }
 
     private void assignBusToRoute(Terminal start, Terminal end) {
+        disabledEventCount = 0;
+        reachedTerminals.clear();
+
         for (Terminal t : routeManager.getAllTerminals()) {
             t.setBusStatus("Idle");
             t.setLastArrivalTime("-");
             t.setDestination(null);
+            t.setStopEnabled(true); 
+
         }
         terminalInfoPanel.setVisible(false);
 
@@ -245,8 +259,22 @@ public class BusRouteMonitoringSystem extends Application {
         if (busIcon != null) mapPanel.removeNodeFromMap(busIcon);
         if (busPathPolyline != null) mapPanel.removeNodeFromMap(busPathPolyline);
 
-        java.util.List<Waypoint> routePoints =
-                routeManager.buildRoute(start, end);
+        List<Waypoint> rawRoute = routeManager.buildRoute(start, end);
+        List<Waypoint> routePoints = new ArrayList<>();
+
+        for (Waypoint wp : rawRoute) {
+            routePoints.add(wp); 
+        }
+
+        activeRouteTerminals.clear();
+        for (Waypoint wp : rawRoute) {
+            for (Terminal t : routeManager.getAllTerminals()) {
+                if (wp.getX() == t.getX() && wp.getY() == t.getY()) {
+                    activeRouteTerminals.add(t);
+                }
+            }
+        }
+
 
         if (routePoints == null || routePoints.size() < 2) {
             System.out.println("No valid route found.");
@@ -300,13 +328,17 @@ public class BusRouteMonitoringSystem extends Application {
             busIcon.setLayoutY(bus.getY());
 
             for (Terminal t : routeManager.getAllTerminals()) {
-                if (Math.abs(bus.getX() - t.getX()) < 1.5 &&
-                    Math.abs(bus.getY() - t.getY()) < 1.5) {
 
-                    handleTerminalArrival(t);
-                    break;
-                }
+            if (!t.isActive() || !t.isStopEnabled()) continue;
+
+            if (Math.abs(bus.getX() - t.getX()) < 1.5 &&
+                Math.abs(bus.getY() - t.getY()) < 1.5) {
+
+                handleTerminalArrival(t);
+                break;
             }
+        }
+
         }));
 
 
@@ -324,6 +356,11 @@ public class BusRouteMonitoringSystem extends Application {
             return;
         }
 
+        if (endTerminal != null && !endTerminal.isStopEnabled()) {
+            System.out.println("Destination terminal is under attack! Bus cannot move.");
+            return;
+        }
+
         if (!isBusPlaying) {
             timeline.play();
             isBusPlaying = true;
@@ -333,7 +370,6 @@ public class BusRouteMonitoringSystem extends Application {
                 startTerminal.setBusStatus("En Route");
                 startTerminal.setDestination(endTerminal);
             }
-
 
             updateBusPlayButtons("⏸");
         } else {
@@ -346,8 +382,9 @@ public class BusRouteMonitoringSystem extends Application {
         if (togglePanel) toggleLeftPanel();
     }
 
+
     private void rewindBus() {
-        if (bus == null) return;
+        if (bus == null || (endTerminal != null && !endTerminal.isStopEnabled())) return;
 
         double oldX = bus.getX();
         double oldY = bus.getY();
@@ -365,7 +402,7 @@ public class BusRouteMonitoringSystem extends Application {
     }
 
     private void forwardBus() {
-        if (bus == null) return;
+        if (bus == null || (endTerminal != null && !endTerminal.isStopEnabled())) return;
 
         double oldX = bus.getX();
         double oldY = bus.getY();
@@ -491,7 +528,9 @@ public class BusRouteMonitoringSystem extends Application {
     private void addMarkers() {
         for (Terminal t : routeManager.getAllTerminals()) {
             MapMarker marker = new MapMarker(t, () -> selectTerminal(t));
-            mapPanel.addMarker(marker);
+            if (t.isActive()) {
+                mapPanel.addMarker(marker);
+            }
         }
     }
 
@@ -544,6 +583,9 @@ public class BusRouteMonitoringSystem extends Application {
         if (reachedTerminals.contains(terminal)) return;
         reachedTerminals.add(terminal);
 
+        Terminal panelTerminal = terminal;
+        Terminal blockedTerminal = null; 
+
         timeline.pause();
         stopSimClock();
         isBusPlaying = false;
@@ -551,16 +593,85 @@ public class BusRouteMonitoringSystem extends Application {
 
         String time = simTimeLabel.getText();
 
+        TerminalEvent event;
+        if (disabledEventCount < MAX_DISABLED_EVENTS_PER_ROUTE &&
+            hasAnotherEnabledTerminal(terminal) &&
+            Math.random() < 0.95) {
+
+            event = TerminalEvent.disabledEvent();
+            disabledEventCount++;
+
+            int index = activeRouteTerminals.indexOf(terminal);
+            if (index != -1) {
+                if (index < activeRouteTerminals.size() - 1) {
+                    blockedTerminal = activeRouteTerminals.get(index + 1);
+                } else if (index > 0) {
+                    blockedTerminal = activeRouteTerminals.get(index - 1);
+                }
+            }
+
+            if (blockedTerminal != null) {
+                blockedTerminal.setStopEnabled(false);
+                panelTerminal = blockedTerminal;
+                historyDropdown.getItems().add(
+                    "⚠ " + blockedTerminal.getName() + " temporarily disabled"
+                );
+            }
+
+        } else {
+            event = TerminalEvent.normalEvent();
+        }
+
         terminal.setBusStatus("Arrived");
         terminal.setLastArrivalTime(time);
         terminal.setDestination(endTerminal);
 
-        historyDropdown.getItems().add(
-            "Bus has reached " + terminal.getName() + " (" + time + ")"
-        );
+        if (terminal == endTerminal && !endTerminal.isStopEnabled()) {
+            historyDropdown.getItems().add(
+                "⚠ " + endTerminal.getName() + " is under attack! Bus stopped."
+            );
+            return; 
+        }
 
-        terminalInfoPanel.displayTerminal(terminal);
+        if (event.getType() == TerminalEvent.Type.DISABLED) {
+            historyDropdown.getItems().add(
+                "⚠ " + panelTerminal.getName() + ": " +
+                event.getTitle() + " (" + time + ")"
+            );
+            showTerminalEventPanel(panelTerminal, event);
+            terminalInfoPanel.setVisible(true);
+
+        } else {
+            historyDropdown.getItems().add(
+                terminal.getName() + " arrived (" + time + ")"
+            );
+        }
     }
 
+    private boolean hasAnotherEnabledTerminal(Terminal current) {
+        for (Terminal t : activeRouteTerminals) {
+            if (t != current && t.isStopEnabled()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    private void showTerminalEventPanel(Terminal terminal, TerminalEvent event) {
+        if (eventPanel != null) {
+            root.getChildren().remove(eventPanel);
+        }
+
+        eventPanel = new TerminalEventPanel(terminal, event);
+
+        eventPanel.setOnClose(() -> {
+            root.getChildren().remove(eventPanel);
+            eventPanel = null;
+        });
+
+        StackPane.setAlignment(eventPanel, Pos.CENTER);
+        root.getChildren().add(eventPanel);
+    }
 
 }

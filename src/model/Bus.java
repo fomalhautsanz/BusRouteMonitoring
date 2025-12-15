@@ -72,7 +72,6 @@ public class Bus {
             x = target.getX();
             y = target.getY();
 
-            // stop at destination
             if (Math.abs(x - endX) < 0.1 && Math.abs(y - endY) < 0.1) {
                 isMoving = false;
             } else {
@@ -89,7 +88,6 @@ public class Bus {
     public void moveBackward() {
         if (currentNode == null || currentNode.prev == null) return;
 
-        // Move to pevious waypoint
         currentNode = currentNode.prev;
         x = currentNode.data.getX();
         y = currentNode.data.getY();
@@ -98,13 +96,11 @@ public class Bus {
 
     public void skipForward(int steps) {
         for (int i = 0; i < steps && currentNode != null; i++) {
-            // Move to the next waypoint directly
             if (currentNode.next != null) {
                 currentNode = currentNode.next;
                 x = currentNode.data.getX();
                 y = currentNode.data.getY();
 
-                // Check if we reached the end
                 if (Math.abs(x - endX) < 0.1 && Math.abs(y - endY) < 0.1) {
                     isMoving = false;
                     break;

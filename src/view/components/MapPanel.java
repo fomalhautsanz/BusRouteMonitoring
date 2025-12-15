@@ -113,7 +113,6 @@ public class MapPanel extends Pane {
             }
         }
 
-        // Vertical constraint
         if (bounds.getHeight() <= paneHeight) {
             dy = paneHeight / 2 - (bounds.getMinY() + bounds.getHeight() / 2);
         } else {

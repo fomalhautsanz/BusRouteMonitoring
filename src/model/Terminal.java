@@ -1,6 +1,9 @@
 package model;
 
 public class Terminal {
+    private boolean active = true;     
+    private boolean stopEnabled = true; 
+    
 
     private String name;
     private double x;
@@ -21,7 +24,22 @@ public class Terminal {
 
     public String getName() { return name; }
 
-   
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public boolean isStopEnabled() {
+        return stopEnabled;
+    }
+
+    public void setStopEnabled(boolean stopEnabled) {
+        this.stopEnabled = stopEnabled;
+    }
+    
     public String getBusStatus() {
         return busStatus;
     }

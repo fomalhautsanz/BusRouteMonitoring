@@ -1,7 +1,7 @@
 package controller;
 
-import model.*;
 import java.util.*;
+import model.*;
 import model.LinkedList;
 
 public class RouteManager {
@@ -162,4 +162,11 @@ public class RouteManager {
             || target == terminalMap.get(getTerminalByName("Banganga, Davao Oriental"));
     }
 
+    public void disableTerminal(String terminalName) {
+        Terminal t = getTerminalByName(terminalName);
+        if (t != null) {
+            t.setActive(false);
+            t.setStopEnabled(false);
+        }
+    }
 }

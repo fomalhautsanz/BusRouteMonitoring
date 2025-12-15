@@ -32,7 +32,7 @@ public class MainApp extends Application {
 
         BorderPane root = new BorderPane();
 
-        ImageView bg = new ImageView(loadImage("assets/img/ma_bg.png"));
+        ImageView bg = new ImageView(loadImage("assets/img/map_bg.png"));
         bg.setPreserveRatio(false);
         bg.fitWidthProperty().bind(stage.widthProperty());
         bg.fitHeightProperty().bind(stage.heightProperty());
